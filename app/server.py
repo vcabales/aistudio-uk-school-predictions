@@ -15,8 +15,6 @@ from starlette.staticfiles import StaticFiles
 export_file_url = 'https://qz-aistudio-jbfm-scratch.s3.amazonaws.com/export.pkl'
 export_file_name = 'export.pkl'
 
-# TODO: Maybe pull most recent reports from Ofsted
-
 classes = ['last', 'not_last']
 path = Path(__file__).parent
 
@@ -63,19 +61,25 @@ async def predict(request):
     pdf_data = await request.form()
     pdf_bytes = await(pdf_data['file'].read())
     pdf = BytesIO(pdf_bytes)
-    text = parser.from_buffer(pdf)['content']
-    text = text.replace('\n',' ')
-    prediction = learn.predict(text)
-    tensor_label = prediction[1].item()
-    if tensor_label == 0:
-        prob = prediction[2][0].item()
-        res = str(prediction[0]) + " - this school may be in danger of closing"
-    else:
-        prob = prediction[2][1].item()
-        res = str(prediction[0]) + " - this school is not in danger of closing"
-    txt_ci = TextClassificationInterpretation.from_learner(learn=learn,ds_type=DatasetType.Test)
-    attention = txt_ci.html_intrinsic_attention(text,cmap=cm.Purples)
-    return JSONResponse({'result': res, 'probability': str(prob), 'attention': attention})
+    try:
+        text = parser.from_buffer(pdf)['content']
+        text = text.replace('\n',' ')
+        prediction = learn.predict(text)
+        tensor_label = prediction[1].item()
+        if tensor_label == 0:
+            prob = prediction[2][0].item()
+            res = "Result: " + str(prediction[0]) + " - this school may be in danger of closing"
+        else:
+            prob = "Probability: " + str(prediction[2][1].item())
+            res = "Result: " + str(prediction[0]) + " - this school is not in danger of closing"
+        txt_ci = TextClassificationInterpretation.from_learner(learn=learn,ds_type=DatasetType.Test)
+        attention = txt_ci.html_intrinsic_attention(text,cmap=cm.Purples)
+    except:
+        prob, attention = "",""
+        res = "Sorry, we ran into an error! Please check the file type of the report you submitted. This app only supports .pdf and .txt files."
+        raise
+    finally:
+        return JSONResponse({'result': res, 'probability': prob, 'attention': attention})
 
 if __name__ == '__main__':
     if 'serve' in sys.argv: uvicorn.run(app=app, host='0.0.0.0', port=5042, log_level="info")
