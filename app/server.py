@@ -5,7 +5,7 @@ import random
 from fastai import *
 from fastai.text import *
 from io import BytesIO
-import matplotlib.cm as cm, mpld3
+import matplotlib.cm as cm
 from tika import parser
 from starlette.applications import Starlette
 from starlette.middleware.cors import CORSMiddleware
