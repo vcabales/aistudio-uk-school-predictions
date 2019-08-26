@@ -16,7 +16,7 @@ from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 
 export_file_url = 'https://qz-aistudio-jbfm-scratch.s3.amazonaws.com/schools3.pkl'
-export_file_name = 'schools3.pkl'
+export_file_name = 'export.pkl'
 
 classes = ['last', 'not_last']
 path = Path(__file__).parent
@@ -114,7 +114,8 @@ async def predict(request):
         print (e)
         raise
     finally:
-        if sendEmail: # if sendEmail == True, send email with Twilio
+        if sendEmail == True: # if sendEmail == True, send email with Twilio
+            print ("sendEmail is true")
             if str(prediction[0]) == 'last':
                 message = Mail(
                 from_email=from_email,
