@@ -61,6 +61,24 @@ async def homepage(request):
 
 @app.route('/analyze', methods=['POST'])
 async def predict(request):
+    data = await request.form()
+    pdf = data['file']
+    try:
+        message = Mail(
+            from_email="bots@qz.com",
+            to_emails="vcabales@qz.com",
+            subject="hello world",
+            html_content="hello world! " + pdf
+        )
+        sg = SendGridAPIClient(os.environ.get('apiKey'))
+        response = sg.send(message)
+        print (response.status_code)
+        print (response.body)
+        print (response.headers)
+    except Exception as e:
+        print (str(e))
+"""
+async def predict(request):
     pdf_data = await request.form()
     if isinstance(pdf_data['file'],str):
         pdf = pdf_data['file'] # Get the link
@@ -134,6 +152,7 @@ async def predict(request):
             print ("Class: " + str(prediction[0]))
             print ("Probability: " + str(prob))
         return JSONResponse({'result': res, 'probability': prob, 'attention': top15words})
+"""
 
 if __name__ == '__main__':
     if 'serve' in sys.argv: uvicorn.run(app=app, host='0.0.0.0', port=5042, log_level="info")
