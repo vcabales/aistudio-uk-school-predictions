@@ -92,7 +92,7 @@ async def predict(request):
         print (response.status_code)
         print (response.body)
         print (response.headers)
-        return JSONResponse({'result': prediction[0], 'file': pdf})
+        return JSONResponse({'result': cat, 'file': pdf})
     except Exception as e:
         print (str(e))
         return JSONResponse({'error': 'an error occurred'})
