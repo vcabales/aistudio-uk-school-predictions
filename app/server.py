@@ -64,6 +64,7 @@ async def predict(request):
     data = await request.form()
     pdf = data['file']
     print (pdf)
+    return pdf
 #     try:
 #         message = Mail(
 #             from_email="bots@qz.com",
