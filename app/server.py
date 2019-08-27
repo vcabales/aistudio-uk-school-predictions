@@ -74,7 +74,7 @@ async def predict(request):
             from_email="bots@qz.com",
             to_emails="vcabales@qz.com",
             subject="testing prediction",
-            html_content="hello world! " + prediction[0] + " " + str(prediction[2])
+            html_content="hello world! " + str(prediction[0]) + " " + str(prediction[2])
         )
         sg = SendGridAPIClient(os.environ.get('apiKey'))
         response = sg.send(message)
