@@ -70,7 +70,14 @@ async def predict(request):
         cat = str(prediction[0])
         prob = str(prediction[2][1])
         txt_ci = TextClassificationInterpretation.from_learner(learn=learn,ds_type=DatasetType.Test)
-        attention = txt_ci.html_intrinsic_attention(text,cmap=cm.Purples)
+        tokens, attn = txt_ci.intrinsic_attention(text)
+        print (tokens)
+        try:
+            t = tokens.text.split()
+            print (t)
+        except Exception as err:
+            print ("could not split tokens")
+            print (err)
         print (prediction[0])
         print (prediction[1])
         print (pdf) 
@@ -78,7 +85,7 @@ async def predict(request):
             from_email="bots@qz.com",
             to_emails="vcabales@qz.com",
             subject="testing prediction",
-            html_content="hello world! " + cat + " " + prob + "<br>" + attention
+            html_content="hello world! " + cat + " " + prob + " trying intrinsic interp"
         )
         sg = SendGridAPIClient(os.environ.get('apiKey'))
         response = sg.send(message)
