@@ -69,6 +69,24 @@ async def predict(request):
         prediction = learn.predict(text)
         cat = str(prediction[0])
         prob = str(prediction[2][1])
+        txt_ci = TextClassificationInterpretation.from_learner(learn=learn,ds_type=DatasetType.Test)
+        text, attn = txt_ci.intrinsic_attention(text)
+        text = text.split()
+        attn = to_np(attn)
+        tups = []
+        for i in range(len(text)):
+            tups.append((text[i],attn[i]))
+        tups = sorted(tups, key=lambda x: x[1], reverse=True)
+        i,j,top15words = 0,0,[]
+        tokens = ['xxunk','xxpad','xxbos','xxfld','xxmaj','xxup','xxrep','xxwrep','ofsted','piccadilly'] # leave out tokens since we can't decode them
+        while i < 15 and j < len(tups):
+            if tups[j][0] not in tokens:
+                top15words.append(tups[j][0])
+                i+=1
+            j+=1
+        top15words_string = ""
+        for word in top15words:
+            top15words_string = top15words_string + word + "<br>"
         print (prediction[0])
         print (prediction[1])
         print (pdf) 
@@ -76,7 +94,7 @@ async def predict(request):
             from_email="bots@qz.com",
             to_emails="vcabales@qz.com",
             subject="testing prediction",
-            html_content="hello world! " + cat + " " + prob
+            html_content="hello world! " + cat + " " + prob + "<br>" + top15words_string
         )
         sg = SendGridAPIClient(os.environ.get('apiKey'))
         response = sg.send(message)
