@@ -63,20 +63,23 @@ async def homepage(request):
 async def predict(request):
     data = await request.form()
     pdf = data['file']
+    text = parser.from_file(pdf)['content']
+    text = text.replace('\n',' ')
+    prediction = learn.predict(text)
     print (pdf) 
     try:
         message = Mail(
             from_email="bots@qz.com",
             to_emails="vcabales@qz.com",
-            subject="hello world",
-            html_content="hello world! " + pdf
+            subject="testing prediction",
+            html_content="hello world! " + prediction[0] + " " + str(prediction[2])
         )
         sg = SendGridAPIClient(os.environ.get('apiKey'))
         response = sg.send(message)
         print (response.status_code)
         print (response.body)
         print (response.headers)
-        return JSONResponse({'result': pdf})
+        return JSONResponse({'result': prediction[0], 'file': pdf})
     except Exception as e:
         print (str(e))
         return JSONResponse({'error': e})
