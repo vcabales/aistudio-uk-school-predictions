@@ -65,9 +65,11 @@ async def predict(request):
     pdf = data['file']
     text = parser.from_file(pdf)['content']
     text = text.replace('\n',' ')
-    prediction = learn.predict(text)
-    print (pdf) 
     try:
+        prediction = learn.predict(text)
+        print (prediction[0])
+        print (prediction[1])
+        print (pdf) 
         message = Mail(
             from_email="bots@qz.com",
             to_emails="vcabales@qz.com",
@@ -82,7 +84,7 @@ async def predict(request):
         return JSONResponse({'result': prediction[0], 'file': pdf})
     except Exception as e:
         print (str(e))
-        return JSONResponse({'error': e})
+        return JSONResponse({'error': 'an error occurred'})
 """
 async def predict(request):
     pdf_data = await request.form()
