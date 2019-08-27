@@ -65,6 +65,8 @@ async def predict(request):
     pdf = data['file']
     text = parser.from_file(pdf)['content']
     text = text.replace('\n',' ')
+    cat = str(prediction[0])
+    prob = str(prediction[2][1])
     try:
         prediction = learn.predict(text)
         print (prediction[0])
@@ -74,7 +76,7 @@ async def predict(request):
             from_email="bots@qz.com",
             to_emails="vcabales@qz.com",
             subject="testing prediction",
-            html_content="hello world! " + str(prediction[0]) + " " + str(prediction[2])
+            html_content="hello world! " + cat + " " + prob
         )
         sg = SendGridAPIClient(os.environ.get('apiKey'))
         response = sg.send(message)
