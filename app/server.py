@@ -65,10 +65,10 @@ async def predict(request):
     pdf = data['file']
     text = parser.from_file(pdf)['content']
     text = text.replace('\n',' ')
-    cat = str(prediction[0])
-    prob = str(prediction[2][1])
     try:
         prediction = learn.predict(text)
+        cat = str(prediction[0])
+        prob = str(prediction[2][1])
         print (prediction[0])
         print (prediction[1])
         print (pdf) 
