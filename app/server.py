@@ -70,34 +70,36 @@ async def predict(request):
     prediction = learn.predict(text)
     cat = str(prediction[0])
     prob = str(prediction[2][1])
+    print (prediction[0])
+    print (prediction[1])
+    print (pdf) 
     try:
-        txt_ci = TextClassificationInterpretation.from_learner(learn=learn,ds_type=DatasetType.Test)
+        txt_ci = TextClassificationInterpretation.from_learner(learn=learn,ds_type=DatasetType.Test) # it can make the interpreter
         print ("classification interpreter made")
         tokens, attn = txt_ci.intrinsic_attention(text)
         print ("splitting tokens...")
         t = tokens.text.split()
         attn = to_np(attn)
-        """
         tups = []
+        print (len(t))
+        print (len(attn))
         for i in range(len(t)):
             tups.append((t[i],attn[i]))
         tups = sorted(tups, key=lambda x: x[1], reverse=True)
         i,j,top15words=0,0,[]
         tokens = ['xxunk','xxpad','xxbos','xxfld','xxmaj','xxup','xxrep','xxwrep','ofsted','piccadilly'] # leave out tokens since we can't decode them
+        """
         while i < 15 and j < len(tups):
             if tups[j][0] not in tokens:
                 top15words.append(tups[j][0])
                 i+=1
             j+=1
+        """
         top15words_string = ""
         top15words = tups[:15]
         for word in top15words:
             top15words_string = top15words_string + word + "<br>"
-        """
-        print (prediction[0])
-        print (prediction[1])
-        print (pdf) 
-        print (tokens)
+
         message = Mail(
             from_email="bots@qz.com",
             to_emails="vcabales@qz.com",
