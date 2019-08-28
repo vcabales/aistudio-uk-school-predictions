@@ -77,6 +77,7 @@ async def predict(request):
         print ("splitting tokens...")
         t = tokens.text.split()
         attn = to_np(attn)
+        """
         tups = []
         for i in range(len(t)):
             tups.append((t[i],attn[i]))
@@ -92,16 +93,16 @@ async def predict(request):
         top15words = tups[:15]
         for word in top15words:
             top15words_string = top15words_string + word + "<br>"
-            
-
+        """
         print (prediction[0])
         print (prediction[1])
         print (pdf) 
+        print (tokens)
         message = Mail(
             from_email="bots@qz.com",
             to_emails="vcabales@qz.com",
             subject="testing prediction",
-            html_content="hello world! " + cat + " " + prob + "<br>" + top15words_string
+            html_content="hello world! " + cat + " " + prob + "<br>" + "trying interp without grabbing words"
         )
         sg = SendGridAPIClient(os.environ.get('apiKey'))
         response = sg.send(message)
