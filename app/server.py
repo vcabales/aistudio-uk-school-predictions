@@ -89,8 +89,8 @@ async def predict(request):
                     top15words.append(tups[j][0])
                     i+=1
                 j+=1
-            top15words_string = ""
             """
+            top15words_string = ""
             top15words = tups[:15]
             for word in top15words:
                 top15words_string = top15words_string + word + "<br>"
