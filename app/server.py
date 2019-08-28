@@ -61,11 +61,13 @@ async def homepage(request):
 
 @app.route('/analyze', methods=['POST'])
 async def predict(request):
+    print ("received post request")
     data = await request.form()
     pdf = data['file']
     text = parser.from_file(pdf)['content']
     text = text.replace('\n',' ')
     try:
+        print ("predicting...")
         prediction = learn.predict(text)
         cat = str(prediction[0])
         prob = str(prediction[2][1])
@@ -79,6 +81,7 @@ async def predict(request):
             for i in range(len(t)):
                 tups.append((t[i],attn[i]))
             tups = sorted(tups, key=lambda x: x[1], reverse=True)
+            """
             i,j,top15words=0,0,[]
             tokens = ['xxunk','xxpad','xxbos','xxfld','xxmaj','xxup','xxrep','xxwrep','ofsted','piccadilly'] # leave out tokens since we can't decode them
             while i < 15 and j < len(tups):
@@ -87,8 +90,11 @@ async def predict(request):
                     i+=1
                 j+=1
             top15words_string = ""
+            """
+            top15words = tups[:15]
             for word in top15words:
                 top15words_string = top15words_string + word + "<br>"
+            
         except Exception as err:
             print ("could not split tokens")
             print (err)
