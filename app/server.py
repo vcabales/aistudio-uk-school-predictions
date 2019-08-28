@@ -76,12 +76,11 @@ async def predict(request):
         tokens, attn = txt_ci.intrinsic_attention(text)
         print ("splitting tokens...")
         t = tokens.text.split()
-        attn = top_np(attn)
+        attn = to_np(attn)
         tups = []
         for i in range(len(t)):
             tups.append((t[i],attn[i]))
         tups = sorted(tups, key=lambda x: x[1], reverse=True)
-        """
         i,j,top15words=0,0,[]
         tokens = ['xxunk','xxpad','xxbos','xxfld','xxmaj','xxup','xxrep','xxwrep','ofsted','piccadilly'] # leave out tokens since we can't decode them
         while i < 15 and j < len(tups):
@@ -89,7 +88,6 @@ async def predict(request):
                 top15words.append(tups[j][0])
                 i+=1
             j+=1
-        """
         top15words_string = ""
         top15words = tups[:15]
         for word in top15words:
@@ -113,6 +111,7 @@ async def predict(request):
         return JSONResponse({'result': cat, 'file': pdf})
     except Exception as e:
         print (str(e))
+        raise
         return JSONResponse({'error': 'an error occurred'})
 """
 async def predict(request):
