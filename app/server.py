@@ -71,10 +71,11 @@ async def predict(request):
         prediction = learn.predict(text)
         cat = str(prediction[0])
         prob = str(prediction[2][1])
-        txt_ci = TextClassificationInterpretation.from_learner(learn=learn,ds_type=DatasetType.Test)
-        tokens, attn = txt_ci.intrinsic_attention(text)
-        print (tokens)
         try:
+            txt_ci = TextClassificationInterpretation.from_learner(learn=learn,ds_type=DatasetType.Test)
+            print ("classification interpreter made")
+            tokens, attn = txt_ci.intrinsic_attention(text)
+            print ("splitting tokens...")
             t = tokens.text.split()
             attn = top_np(attn)
             tups = []
