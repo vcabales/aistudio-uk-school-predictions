@@ -69,6 +69,8 @@ async def predict(request):
     print ("predicting...")
     prediction = learn.predict(text)
     cat = str(prediction[0])
+    prob = str(prediction[2][1])
+    """
     tensor_label = prediction[1].item()
     if tensor_label == 0:
         prob = prediction[2][0].item()
@@ -76,6 +78,7 @@ async def predict(request):
     else:
         prob = prediction[2][1].item()
         res = "Result: " + str(prediction[0]) + " - this school is not in danger of closing"
+    """
     print (cat)
     print (prob)
     print (pdf) 
@@ -103,7 +106,7 @@ async def predict(request):
             from_email="bots@qz.com",
             to_emails="vcabales@qz.com",
             subject="testing prediction",
-            html_content="hello world! " + res + "<br>" + prob + "<br>" + top15words_string
+            html_content="hello world! " + cat + "<br>" + prob + "<br>" + top15words_string
         )
         sg = SendGridAPIClient(os.environ.get('apiKey'))
         response = sg.send(message)
