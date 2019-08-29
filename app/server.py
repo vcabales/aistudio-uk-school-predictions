@@ -76,7 +76,7 @@ async def predict(request):
     else:
         prob = prediction[2][1].item()
         res = "Result: " + str(prediction[0]) + " - this school is not in danger of closing"
-    print (cat])
+    print (cat)
     print (prob)
     print (pdf) 
     try:
