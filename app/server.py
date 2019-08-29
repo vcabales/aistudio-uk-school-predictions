@@ -81,7 +81,7 @@ async def predict(request):
         tokens = tokens.text.split()
         attn = to_np(attn)
         tups = sorted(zip(attn,tokens),reverse=True)
-        common_phrases = ['xxunk','xxpad','xxbos','xxfld','xxmaj','xxup','xxrep','xxwrep','ofsted','piccadilly'] # leave out tokens since we can't decode them
+        # common_phrases = ['xxunk','xxpad','xxbos','xxfld','xxmaj','xxup','xxrep','xxwrep','ofsted','piccadilly'] # leave out tokens since we can't decode them
         top15words_string = ""
         top15words = [t[1] for t in tups[:15]]
         for word in top15words:
