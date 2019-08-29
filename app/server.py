@@ -93,7 +93,7 @@ async def predict(request):
         tups = sorted(zip(attn,tokens),reverse=True)
         common_phrases = ['xxunk','xxpad','xxbos','xxfld','xxmaj','xxup','xxrep','xxwrep','ofsted','piccadilly'] # leave out tokens since we can't decode them
         top15words_string = ""
-        top15words = [t[1] if t[1] not in common_phrases for t in tups[:15]]
+        top15words = [t[1] for t in tups[:15] if t[1] not in common_phrases]
         for word in top15words:
             top15words_string = top15words_string + word + "<br>"
 
