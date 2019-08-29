@@ -70,6 +70,7 @@ async def predict(request):
     prediction = learn.predict(text)
     cat = str(prediction[0])
     prob = str(prediction[2][1])
+    tensor_label = prediction[1].item()
     """
     tensor_label = prediction[1].item()
     if tensor_label == 0:
@@ -90,15 +91,9 @@ async def predict(request):
         tokens = tokens.text.split()
         attn = to_np(attn)
         tups = sorted(zip(attn,tokens),reverse=True)
-        i,j,top15words=0,0,[]
         common_phrases = ['xxunk','xxpad','xxbos','xxfld','xxmaj','xxup','xxrep','xxwrep','ofsted','piccadilly'] # leave out tokens since we can't decode them
-        while i < 15 and j < len(tups):
-            if tups[j][0] not in common_phrases:
-                top15words.append(tups[j][1])
-                i+=1
-            j+=1
         top15words_string = ""
-        # top15words = [t[1] for t in tups[:15]]
+        top15words = [t[1] if t[1] not in common_phrases for t in tups[:15]]
         for word in top15words:
             top15words_string = top15words_string + word + "<br>"
 
