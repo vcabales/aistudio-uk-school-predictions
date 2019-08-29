@@ -69,9 +69,15 @@ async def predict(request):
     print ("predicting...")
     prediction = learn.predict(text)
     cat = str(prediction[0])
-    prob = str(prediction[2][1])
-    print (prediction[0])
-    print (prediction[1])
+    tensor_label = prediction[1].item()
+    if tensor_label == 0:
+        prob = prediction[2][0].item()
+        res = "Result: " + str(prediction[0]) + " - this school may be in danger of closing"
+    else:
+        prob = prediction[2][1].item()
+        res = "Result: " + str(prediction[0]) + " - this school is not in danger of closing"
+    print (cat])
+    print (prob)
     print (pdf) 
     try:
         txt_ci = TextClassificationInterpretation.from_learner(learn=learn,ds_type=DatasetType.Test) # it can make the interpreter
@@ -81,17 +87,15 @@ async def predict(request):
         tokens = tokens.text.split()
         attn = to_np(attn)
         tups = sorted(zip(attn,tokens),reverse=True)
-        """
         i,j,top15words=0,0,[]
         common_phrases = ['xxunk','xxpad','xxbos','xxfld','xxmaj','xxup','xxrep','xxwrep','ofsted','piccadilly'] # leave out tokens since we can't decode them
         while i < 15 and j < len(tups):
             if tups[j][0] not in common_phrases:
-                top15words.append(tups[j][0])
+                top15words.append(tups[j][1])
                 i+=1
             j+=1
-        """
         top15words_string = ""
-        top15words = [t[1] for t in tups[:15]]
+        # top15words = [t[1] for t in tups[:15]]
         for word in top15words:
             top15words_string = top15words_string + word + "<br>"
 
@@ -99,7 +103,7 @@ async def predict(request):
             from_email="bots@qz.com",
             to_emails="vcabales@qz.com",
             subject="testing prediction",
-            html_content="hello world! " + cat + " " + prob + "<br>" + top15words_string
+            html_content="hello world! " + res + "<br>" + prob + "<br>" + top15words_string
         )
         sg = SendGridAPIClient(os.environ.get('apiKey'))
         response = sg.send(message)
