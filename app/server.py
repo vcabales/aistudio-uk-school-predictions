@@ -78,25 +78,20 @@ async def predict(request):
         print ("classification interpreter made")
         tokens, attn = txt_ci.intrinsic_attention(text)
         print ("splitting tokens...")
-        t = tokens.text.split()
+        tokens = tokens.text.split()
         attn = to_np(attn)
-        tups = []
-        print (len(t))
-        print (len(attn))
-        for i in range(len(t)):
-            tups.append((t[i],attn[i]))
-        tups = sorted(tups, key=lambda x: x[1], reverse=True)
-        i,j,top15words=0,0,[]
-        tokens = ['xxunk','xxpad','xxbos','xxfld','xxmaj','xxup','xxrep','xxwrep','ofsted','piccadilly'] # leave out tokens since we can't decode them
+        tups = sorted(zip(attn,tokens),reverse=True)
         """
+        i,j,top15words=0,0,[]
+        common_phrases = ['xxunk','xxpad','xxbos','xxfld','xxmaj','xxup','xxrep','xxwrep','ofsted','piccadilly'] # leave out tokens since we can't decode them
         while i < 15 and j < len(tups):
-            if tups[j][0] not in tokens:
+            if tups[j][0] not in common_phrases:
                 top15words.append(tups[j][0])
                 i+=1
             j+=1
         """
         top15words_string = ""
-        top15words = tups[:15]
+        top15words = [t[1] for t in tups[:15]]
         for word in top15words:
             top15words_string = top15words_string + word + "<br>"
 
