@@ -70,16 +70,6 @@ async def predict(request):
     prediction = learn.predict(text)
     cat = str(prediction[0])
     prob = str(prediction[2][1])
-    # tensor_label = prediction[1].item()
-    """
-    tensor_label = prediction[1].item()
-    if tensor_label == 0:
-        prob = prediction[2][0].item()
-        res = "Result: " + str(prediction[0]) + " - this school may be in danger of closing"
-    else:
-        prob = prediction[2][1].item()
-        res = "Result: " + str(prediction[0]) + " - this school is not in danger of closing"
-    """
     print (cat)
     print (prob)
     print (pdf) 
