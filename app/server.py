@@ -70,7 +70,7 @@ async def predict(request):
     prediction = learn.predict(text)
     cat = str(prediction[0])
     prob = str(prediction[2][1])
-    tensor_label = prediction[1].item()
+    # tensor_label = prediction[1].item()
     """
     tensor_label = prediction[1].item()
     if tensor_label == 0:
