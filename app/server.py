@@ -85,10 +85,11 @@ async def predict(request):
             csv_writer.writerow(['school','report','confidence'])
             for obj in reports:
                 school = obj['school']
-                file = obj['file']
-                text = parser.from_file(file)['content'] # Pull down file from link
+                my_file = obj['file']
+                text = parser.from_file(my_file)['content'] # Pull down file from link
                 text = text.replace('\n',' ')
                 prediction = learn.predict(text)
+                print ("prediction made")
                 tensor_label = prediction[1].item()
                 if tensor_label == 0:
                     prob = prediction[2][0].item()
@@ -97,8 +98,8 @@ async def predict(request):
                     prob = prediction[2][1].item()
                     res = "Result: " + str(prediction[0]) + " - this school is not in danger of closing"
                 if str(prediction[0]) == 'last':
-                    print([school, file, prob])
-                    csv_writer.writerow([school, file, prob])
+                    print([school, my_file, prob])
+                    csv_writer.writerow([school, my_file, prob])
                     csv_file.flush()
             csv_file.close()
 
