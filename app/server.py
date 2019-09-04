@@ -46,7 +46,7 @@ async def setup_learner(): # Load learner for predictions
         test = ItemList.from_csv(path='app/',csv_name='last_report_test_sample.csv')
         learn = load_learner(path, export_file_name,test) # Replace path with path of file
         # learn.model = learn.model.module # must reference module since the learner was wrapped in nn.DataParallel
-        preds = learn.get_preds(ds_type=DatasetType.Test)
+#         preds = learn.get_preds(ds_type=DatasetType.Test)
         logging.info("learner set up successfully")
         return learn
     except RuntimeError as e:
@@ -82,16 +82,20 @@ async def predict(request):
     try:
         yesterday = datetime.strftime(datetime.now() - timedelta(1), '%Y-%m-%d')
         csv_name = 'school-closures'+yesterday+'.csv'
+        print (csv_name)
         with open(csv_name,'w') as csv_file:
             csv_writer = csv.writer(csv_file, delimiter=',', quotechar='"',quoting=csv.QUOTE_MINIMAL)
             csv_writer.writerow(['school','report','confidence'])
+            print ("wrote to csv")
             for obj in reports:
                 school = obj['school']
                 my_file = obj['file']
+                print ("parsing file...")
                 text = parser.from_file(my_file)['content'] # Pull down file from link
                 text = text.replace('\n',' ')
                 prediction = learn.predict(text)
                 logging.info("Prediction made")
+                print ("prediction made")
                 tensor_label = prediction[1].item()
                 if tensor_label == 0:
                     prob = prediction[2][0].item()
