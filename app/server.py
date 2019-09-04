@@ -125,7 +125,7 @@ async def predict(request):
             message = Mail(
             from_email=from_email,
             to_emails=to_email,
-            subject='Testing School Classifier',
+            subject='Predicting School Closures '+yesterday,
             html_content=content
             )
             message.attachment = attachment
