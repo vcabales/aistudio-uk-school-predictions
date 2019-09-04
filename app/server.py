@@ -81,7 +81,7 @@ async def predict(request):
 
     try:
         yesterday = datetime.strftime(datetime.now() - timedelta(1), '%Y-%m-%d')
-        csv_name = 'school-closures'+yesterday+'.csv'
+        csv_name = 'app/school-closures'+yesterday+'.csv'
         print (csv_name)
         with open(csv_name,'w') as csv_file:
             csv_writer = csv.writer(csv_file, delimiter=',', quotechar='"',quoting=csv.QUOTE_MINIMAL)
