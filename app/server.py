@@ -147,6 +147,7 @@ async def predict(request):
             except Exception as e:
                 print ("could not send email")
                 print(str(e))
+                return JSONResponse({'result': 'Email could not be sent'})
 
         os.remove(csv_name) # delete the csv file
 
