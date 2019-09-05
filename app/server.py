@@ -118,27 +118,25 @@ async def predict(request):
     finally:
         if sendEmail == True: # if sendEmail == True, send email with Twilio
             content = "Hey there! We ran into some interesting school reports from Ofsted, and by our calculations, these could possibly be the final reports of these schools before they close. We've attached a CSV with a list of the school reports."
+            try:
+                with open(csv_name,'rb') as f: # open up the csv and attach it
+                    data = f.read()
+                    f.close()
+                encoded = base64.b64encode(data).decode() # encode csv file to send attachment
+                attachment = Attachment()
+                attachment.content = encoded
+                attachment.file_content = FileContent(encoded)
+                attachment.file_name = csv_name
+                attachment.disposition = Disposition('attachment')
+                attachment.file_type = FileType("text/csv")
 
-            with open(csv_name,'rb') as f: # open up the csv and attach it
-                data = f.read()
-                f.close()
-            encoded = base64.b64encode(data).decode() # encode csv file to send attachment
-            attachment = Attachment()
-            attachment.content = encoded
-            attachment.file_content = FileContent(encoded)
-            attachment.file_name = csv_name
-            attachment.disposition = Disposition('attachment')
-            attachment.file_type = FileType("text/csv")
-
-            message = Mail(
-            from_email=from_email,
-            to_emails=to_email,
-            subject='Predicting School Closures '+yesterday,
-            html_content=content
-            )
-            message.attachment = attachment
-
-            try: # send the email
+                message = Mail(
+                from_email=from_email,
+                to_emails=to_email,
+                subject='Predicting School Closures '+yesterday,
+                html_content=content
+                )
+                message.attachment = attachment
                 sg = SendGridAPIClient(os.environ.get('apiKey'))
                 response = sg.send(message)
                 print (response.status_code)
@@ -149,7 +147,7 @@ async def predict(request):
                 print(str(e))
                 return JSONResponse({'result': 'Email could not be sent'})
 
-        os.remove(csv_name) # delete the csv file
+        #os.remove(csv_name) # delete the csv file
 
         return JSONResponse({'result': 'Email sent'})
 
