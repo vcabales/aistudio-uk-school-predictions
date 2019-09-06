@@ -68,6 +68,10 @@ loop.close()
 #    html_file = path / 'view' / 'index.html'
 #    return HTMLResponse(html_file.open().read())
 
+@app.route('/healthz', methods=['GET'])
+async def health_check(request):
+    return JSONResponse({'health_check': 'ok'})
+
 @app.route('/analyze', methods=['POST'])
 async def predict(request):
     pdf_data = await request.form()
@@ -152,4 +156,4 @@ async def predict(request):
         return JSONResponse({'result': 'Email sent'})
 
 if __name__ == '__main__':
-    if 'serve' in sys.argv: uvicorn.run(app=app, host='0.0.0.0', port=5042, log_level="info", timeout_keep_alive=1000, debug=True)
+    if 'serve' in sys.argv: uvicorn.run(app=app, host='0.0.0.0', port=5042, log_level="info", timeout_keep_alive=1000, debug=True, workers=2)
