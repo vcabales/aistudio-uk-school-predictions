@@ -156,4 +156,4 @@ async def predict(request):
         return JSONResponse({'result': 'Email sent'})
 
 if __name__ == '__main__':
-    if 'serve' in sys.argv: uvicorn.run(app=app, host='0.0.0.0', port=5042, log_level="info", timeout_keep_alive=1000, debug=True, workers=2)
+    if 'serve' in sys.argv: uvicorn.run(app=app, host='0.0.0.0', port=5042, log_level="info", timeout_keep_alive=10000, debug=True, workers=2)
