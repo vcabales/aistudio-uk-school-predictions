@@ -20,7 +20,6 @@ from datetime import datetime, timedelta
 import csv
 import base64
 import json
-import logging
 
 export_file_url = 'https://qz-aistudio-jbfm-scratch.s3.amazonaws.com/final_no_preds_export.pkl'
 export_file_name = 'final_no_preds_export.pkl'
@@ -47,7 +46,7 @@ async def setup_learner(): # Load learner for predictions
         learn = load_learner('app/', export_file_name,test) # Replace path with path of file
         # learn.model = learn.model.module # must reference module since the learner was wrapped in nn.DataParallel
 #         preds = learn.get_preds(ds_type=DatasetType.Test)
-        logging.info("learner set up successfully")
+        logger.info("learner set up successfully")
         return learn
     except RuntimeError as e:
         if len(e.args) > 0 and 'CPU-only machine' in e.args[0]:
@@ -98,7 +97,7 @@ async def predict(request):
                 text = parser.from_file(my_file)['content'] # Pull down file from link
                 text = text.replace('\n',' ')
                 prediction = learn.predict(text)
-                logging.info("Prediction made")
+                logger.info("Prediction made")
                 print ("prediction made")
                 tensor_label = prediction[1].item()
                 if tensor_label == 0:
@@ -108,7 +107,7 @@ async def predict(request):
                     prob = prediction[2][1].item()
                     res = "Result: " + str(prediction[0]) + " - this school is not in danger of closing"
                 if str(prediction[0]) == 'last':
-                    logging.info([school, my_file, prob])
+                    logger.info([school, my_file, prob])
                     csv_writer.writerow([school, my_file, prob])
                     csv_file.flush()
             csv_file.close()
@@ -156,4 +155,4 @@ async def predict(request):
         return JSONResponse({'result': 'Email sent'})
 
 if __name__ == '__main__':
-    if 'serve' in sys.argv: uvicorn.run(app=app, host='0.0.0.0', port=5042, log_level="info", timeout_keep_alive=100000, debug=True, workers=2)
+    if 'serve' in sys.argv: uvicorn.run(app=app, host='0.0.0.0', port=5042, log_level="info", timeout_keep_alive=100000, debug=True, workers=2, reload=False)
