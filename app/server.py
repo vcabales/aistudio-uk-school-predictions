@@ -77,10 +77,11 @@ async def predict(request):
     if 'reports' in pdf_data:
         reports = pdf_data['reports'] # Get list of reports and school names
         reports = json.loads(reports)
-        if 'to_email' in pdf_data:
-            sendEmail = True
-            to_email = pdf_data['to_email']
-            from_email = pdf_data['from_email']
+        print (reports)
+    if 'to_email' in pdf_data:
+        sendEmail = True
+        to_email = pdf_data['to_email']
+        from_email = pdf_data['from_email']
 
     try:
         yesterday = datetime.strftime(datetime.now() - timedelta(1), '%Y-%m-%d')
