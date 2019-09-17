@@ -150,7 +150,7 @@ async def predict(request):
                 print(str(e))
                 return JSONResponse({'result': 'Email could not be sent'})
 
-        #os.remove(csv_name) # delete the csv file
+        os.remove(csv_name) # delete the csv file
 
         return JSONResponse({'result': 'Email sent'})
 
