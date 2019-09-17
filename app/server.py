@@ -97,10 +97,8 @@ async def predict(request):
                 print ("parsing file...")
                 text = parser.from_file(my_file)['content'] # Pull down file from link
                 text = text.replace('\n',' ')
-                print (text)
                 prediction = learn.predict(text)
                 print (prediction)
-#                 logger.info("Prediction made")
                 print ("prediction made")
                 tensor_label = prediction[1].item()
                 if tensor_label == 0:
@@ -109,11 +107,10 @@ async def predict(request):
                 else:
                     prob = prediction[2][1].item()
                     res = "Result: " + str(prediction[0]) + " - this school is not in danger of closing"
-                #if str(prediction[0]) == 'last':
-#                     logger.info([school, my_file, prob])
                 print ("printing prob..."+str(prob))
-                csv_writer.writerow([school, my_file, prob])
-                csv_file.flush()
+                if str(prediction[0]) == 'last':
+                    csv_writer.writerow([school, my_file, prob])
+                    csv_file.flush()
             csv_file.close()
 
     except Exception as e:
