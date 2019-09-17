@@ -96,7 +96,9 @@ async def predict(request):
                 print ("parsing file...")
                 text = parser.from_file(my_file)['content'] # Pull down file from link
                 text = text.replace('\n',' ')
+                print (text)
                 prediction = learn.predict(text)
+                print (prediction)
 #                 logger.info("Prediction made")
                 print ("prediction made")
                 tensor_label = prediction[1].item()
@@ -117,11 +119,12 @@ async def predict(request):
         res = "Sorry, we ran into an error! Please check the file type of the report you submitted. This app only supports .pdf and .txt files."
         print ("error making predictions")
         print (e)
+        sendEmail = False
         raise
         return JSONResponse({'result': res})
     finally:
         if sendEmail == True: # if sendEmail == True, send email with Twilio
-            content = "Hey there! We ran into some interesting school reports from Ofsted, and by our calculations, these could possibly be the final reports of these schools before they close. We've attached a CSV with a list of the school reports. " + str(prob)
+            content = "Hey there! We ran into some interesting school reports from Ofsted, and by our calculations, these could possibly be the final reports of these schools before they close. We've attached a CSV with a list of the school reports."
             try:
                 with open(csv_name,'rb') as f: # open up the csv and attach it
                     data = f.read()
