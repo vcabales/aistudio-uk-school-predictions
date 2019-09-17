@@ -108,6 +108,7 @@ async def predict(request):
                     res = "Result: " + str(prediction[0]) + " - this school is not in danger of closing"
                 #if str(prediction[0]) == 'last':
 #                     logger.info([school, my_file, prob])
+                print ("printing prob..."+str(prob))
                 csv_writer.writerow([school, my_file, prob])
                 csv_file.flush()
             csv_file.close()
@@ -120,7 +121,7 @@ async def predict(request):
         return JSONResponse({'result': res})
     finally:
         if sendEmail == True: # if sendEmail == True, send email with Twilio
-            content = "Hey there! We ran into some interesting school reports from Ofsted, and by our calculations, these could possibly be the final reports of these schools before they close. We've attached a CSV with a list of the school reports."
+            content = "Hey there! We ran into some interesting school reports from Ofsted, and by our calculations, these could possibly be the final reports of these schools before they close. We've attached a CSV with a list of the school reports. " + str(prob)
             try:
                 with open(csv_name,'rb') as f: # open up the csv and attach it
                     data = f.read()
