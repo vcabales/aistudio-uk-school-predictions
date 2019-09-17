@@ -106,10 +106,10 @@ async def predict(request):
                 else:
                     prob = prediction[2][1].item()
                     res = "Result: " + str(prediction[0]) + " - this school is not in danger of closing"
-                if str(prediction[0]) == 'last':
+                #if str(prediction[0]) == 'last':
 #                     logger.info([school, my_file, prob])
-                    csv_writer.writerow([school, my_file, prob])
-                    csv_file.flush()
+                csv_writer.writerow([school, my_file, prob])
+                csv_file.flush()
             csv_file.close()
 
     except Exception as e:
